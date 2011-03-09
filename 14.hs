@@ -1,13 +1,20 @@
 -- Which starting number, under one million, produces the longest chain?
 
-next :: Int -> Int
-next n | n `mod` 2 == 0 = n `div` 2
-       | otherwise      = 3 * n + 1
-       
-chain 1 = [1]
-chain n = n : (chain $ next n)
+import List       
+import qualified Data.IntMap as M
 
-longestChain limit = fst $ foldr longer (0, 0) $ map withLength [1 .. limit]
-    where longer (n, lenN) (m, lenM) | lenN > lenM = (n, lenN)
-                                     | otherwise   = (m, lenM)
-          withLength n = (n, length $ chain n)
+longest n = snd $ maximum $ chainLengths [1..n]
+
+chainLengths [] = []
+chainLengths (n:ns) = (chainLength n, n): chainLengths ns
+
+chainLength n
+    |n==1 = 1
+    |even n = 1 + chainLength (n `div` 2)
+    |otherwise = 1 + chainLength (3*n + 1)
+    
+-- todo: try if IntMap can speed this up
+loop :: Int -> Int    
+loop n = mapWith n M.empty
+    where mapWith 1 _ = 0
+          mapWith n mapped = mapWith (n-1) (M.insert n n mapped)
