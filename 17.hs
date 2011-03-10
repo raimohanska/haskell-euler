@@ -7,3 +7,6 @@ inWords n | n < 20 = (!!) words n
     where words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
 inWords n | n < 100 = (!!) words ((n `div` 10) - 2) ++ " " ++ inWords (n `mod` 10)
     where words = ["twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+inWords n | n < 1000 = inWords (n `div` 100) ++ " hundred" ++ rest (n `mod` 100)
+    where rest 0 = ""
+          rest x = " and " ++ inWords x
